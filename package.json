@@ -6,13 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "setup-db": "tsx scripts/setup-db.ts"
   },
   "dependencies": {
     "axios": "^1.13.2",
+    "dotenv": "^17.2.3",
     "formidable": "^3.5.4",
     "next": "16.0.7",
+    "openai": "^6.10.0",
     "pdf-parse": "^2.4.5",
+    "pg": "^8.16.3",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
@@ -27,6 +31,7 @@
     "eslint-config-next": "16.0.7",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.17",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }
