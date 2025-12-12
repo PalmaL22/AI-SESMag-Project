@@ -131,7 +131,7 @@ export default function PDFUpload({
                   {uploadedFileName}
                 </p>
                 <p className="text-sm text-zinc-400">
-                  PDF uploaded successfully
+                  PDF uploaded
                 </p>
                 <p className="text-xs text-zinc-500 mt-4">
                   Click here to upload a different PDF
