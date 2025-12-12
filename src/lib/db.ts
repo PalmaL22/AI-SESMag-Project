@@ -189,23 +189,10 @@ export async function deleteSession(sessionId: number) {
   }
 }
 
-export async function deleteConversationHistory(pdfId: number | null = null) {
-  const client = await getPool().connect();
-  try {
-    if (pdfId) {
-      await client.query('DELETE FROM conversation_history WHERE pdf_id = $1;', [pdfId]);
-    } else {
-      await client.query('DELETE FROM conversation_history;');
-    }
-  } finally {
-    client.release();
-  }
-}
-
 export async function getAllPDFs() {
   const client = await getPool().connect();
   try {
-    const result = await client.query('SELECT id, filename, uploaded_at, file_size FROM pdfs ORDER BY uploaded_at DESC;');
+    const result = await client.query('SELECT id, filename, file_size FROM pdfs ORDER BY uploaded_at DESC;');
     return result.rows;
   } finally {
     client.release();
@@ -215,7 +202,7 @@ export async function getAllPDFs() {
 export async function getPDFByFilename(filename: string) {
   const client = await getPool().connect();
   try {
-    const result = await client.query('SELECT id, filename, uploaded_at, file_size FROM pdfs WHERE filename = $1;', [filename]);
+    const result = await client.query('SELECT id, filename, file_size FROM pdfs WHERE filename = $1;', [filename]);
     return result.rows[0] || null;
   } finally {
     client.release();
@@ -242,7 +229,7 @@ export async function getPDFChunks(pdfId: number) {
   const client = await getPool().connect();
   try {
     const result = await client.query(
-      'SELECT id, pdf_id, chunk_text, chunk_index, created_at FROM pdf_chunks WHERE pdf_id = $1 ORDER BY chunk_index ASC;',
+      'SELECT id, pdf_id, chunk_text, chunk_index FROM pdf_chunks WHERE pdf_id = $1 ORDER BY chunk_index ASC;',
       [pdfId]
     );
     return result.rows;
@@ -255,11 +242,7 @@ export async function searchPDFChunks(pdfId: number, searchTerm: string, limit: 
   const client = await getPool().connect();
   try {
     const result = await client.query(
-      `SELECT id, pdf_id, chunk_text, chunk_index, created_at 
-       FROM pdf_chunks 
-       WHERE pdf_id = $1 AND chunk_text ILIKE $2 
-       ORDER BY chunk_index ASC 
-       LIMIT $3;`,
+      'SELECT id, pdf_id, chunk_text, chunk_index FROM pdf_chunks WHERE pdf_id = $1 AND chunk_text ILIKE $2 ORDER BY chunk_index ASC LIMIT $3;',
       [pdfId, `%${searchTerm}%`, limit]
     );
     return result.rows;

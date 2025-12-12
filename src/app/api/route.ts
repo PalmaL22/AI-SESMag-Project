@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
-import { getOrCreatePDF, getPDFByFilename, initDatabase, saveMessage, savePDFChunks, getPDFChunks, searchPDFChunks, getConversationHistory, createSession, getSessionsByPDF, getAllSessions, getAllPDFs, deleteSession, updateSessionPDF } from '@/lib/db';
+import { getOrCreatePDF, getPDFByFilename, initDatabase, saveMessage, savePDFChunks, 
+getPDFChunks, searchPDFChunks, getConversationHistory, createSession, getSessionsByPDF, getAllSessions, getAllPDFs, 
+deleteSession, updateSessionPDF } from '@/lib/db';
+
 import { openai, splitTextIntoChunks } from '@/lib/openai';
 import { SYSTEM_PROMPTS, formatPDFUserMessage } from '@/lib/prompts';
 
@@ -22,9 +25,9 @@ export async function GET(request: NextRequest) {
         : await getAllSessions();
 
       const allPDFs = await getAllPDFs();
-      const pdfMap = new Map(allPDFs.map((p: any) => [p.id, p.filename]));
+      const pdfMap = new Map(allPDFs.map((p) => [p.id, p.filename]));
       
-      const sessionsWithPDFs = sessions.map((session: any) => ({
+      const sessionsWithPDFs = sessions.map((session) => ({
         id: session.id,
         pdfId: session.pdf_id,
         pdfName: session.pdf_id ? pdfMap.get(session.pdf_id) || null : null,
@@ -49,6 +52,10 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    if (!sessionIdNum) {
+      return NextResponse.json({ messages: [], sessionId: null });
+    }
+
     const history = await getConversationHistory(sessionIdNum, 100);
     const messages = history.map(msg => ({
       id: msg.id.toString(),
@@ -58,9 +65,10 @@ export async function GET(request: NextRequest) {
     }));
 
     return NextResponse.json({ messages, sessionId: sessionIdNum });
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Request failed';
     return NextResponse.json(
-      { error: error.message || 'Request failed' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
@@ -70,21 +78,21 @@ if (typeof globalThis.DOMMatrix === 'undefined') {
   globalThis.DOMMatrix = class DOMMatrix {
     constructor() {}
     static fromMatrix() { return new DOMMatrix(); }
-  } as any;
+  } as typeof DOMMatrix;
 }
 
 if (typeof globalThis.ImageData === 'undefined') {
   globalThis.ImageData = class ImageData {
     constructor(public data: Uint8ClampedArray, public width: number, public height: number) {}
-  } as any;
+  } as typeof ImageData;
 }
 
 if (typeof globalThis.Path2D === 'undefined') {
-  globalThis.Path2D = class Path2D {} as any;
+  globalThis.Path2D = class Path2D {} as typeof Path2D;
 }
 
 async function parsePDF(buffer: Buffer | Uint8Array) {
-  const pdfParse = require('pdf-parse');
+  const pdfParse = require('pdf-parse') as (buffer: Buffer) => Promise<{ text: string }>;
   const bufferData = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer);
   return await pdfParse(bufferData);
 }
@@ -104,9 +112,10 @@ export async function DELETE(request: NextRequest) {
     await deleteSession(sessionIdNum);
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Request failed';
     return NextResponse.json(
-      { error: error.message || 'Request failed' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
@@ -139,22 +148,10 @@ export async function POST(request: NextRequest) {
       let pdfData;
       try {
         pdfData = await parsePDF(uint8Array);
-        console.log('PDF Parse Result:', {
-          hasText: !!pdfData?.text,
-          textLength: pdfData?.text?.length,
-          keys: Object.keys(pdfData || {}).slice(0, 10),
-          type: typeof pdfData,
-          docType: typeof pdfData?.doc,
-          docValue: pdfData?.doc,
-          docKeys: pdfData?.doc ? Object.keys(pdfData.doc).slice(0, 10) : null,
-          docHasText: !!pdfData?.doc?.text,
-          docTextLength: pdfData?.doc?.text?.length,
-          progress: pdfData?.progress
-        });
-      } catch (parseError: any) {
-        console.error('PDF Parse Error:', parseError);
+      } catch (parseError) {
+        const errorMessage = parseError instanceof Error ? parseError.message : 'Unknown parsing error';
         return NextResponse.json({ 
-          error: `Failed to parse PDF: ${parseError.message}` 
+          error: `Failed to parse PDF: ${errorMessage}` 
         }, { status: 500 });
       }
       
@@ -179,10 +176,10 @@ export async function POST(request: NextRequest) {
           throw new Error('Failed to create text chunks');
         }
         await savePDFChunks(pdfId, chunks);
-      } catch (chunkError: any) {
-        console.error('Chunking error:', chunkError);
+      } catch (chunkError) {
+        const errorMessage = chunkError instanceof Error ? chunkError.message : 'Unknown chunking error';
         return NextResponse.json({ 
-          error: `Failed to process PDF text: ${chunkError.message}` 
+          error: `Failed to process PDF text: ${errorMessage}` 
         }, { status: 500 });
       }
       
@@ -296,9 +293,10 @@ export async function POST(request: NextRequest) {
         sessionId: currentSessionId,
       });
     }
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Request failed';
     return NextResponse.json(
-      { error: error.message || 'Request failed' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

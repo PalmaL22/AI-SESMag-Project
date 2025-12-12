@@ -36,9 +36,11 @@ export default function Home() {
       const response = await fetch(`/api?${params}`);
       if (!response.ok) return;
       
-      const data = await response.json();
-      const messages = (data.messages || []).map((msg: any) => ({
-        ...msg,
+      const data = await response.json() as { messages?: Array<{ id: string; role: 'user' | 'assistant'; content: string; timestamp: string }>; sessionId?: number };
+      const messages: Message[] = (data.messages || []).map((msg) => ({
+        id: msg.id,
+        role: msg.role,
+        content: msg.content,
         timestamp: new Date(msg.timestamp),
       }));
       setMessages(messages);
@@ -61,7 +63,9 @@ export default function Home() {
   };
 
   const handleSelectSession = async (selectedSessionId: number) => {
+    const selectedSession = sessions.find(s => s.id === selectedSessionId);
     setSessionId(selectedSessionId);
+    setUploadedFileName(selectedSession?.pdfName || null);
     await loadConversationHistory(selectedSessionId, null);
   };
 
@@ -94,7 +98,6 @@ export default function Home() {
   };
 
   useEffect(() => {
-    loadConversationHistory(null);
     loadSessions();
   }, []);
 
@@ -133,16 +136,17 @@ export default function Home() {
         await loadConversationHistory(data.sessionId, null);
       }
       await loadSessions();
-    } catch (error: any) {
+    } catch (error) {
       setIsUploading(false);
       setUploadedFileName(null);
-      const errorMessage: Message = {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMsg: Message = {
         id: Date.now().toString(),
         role: "assistant",
-        content: `Sorry, I encountered an error uploading your PDF: ${error.message}. Please try again.`,
+        content: `Sorry, I encountered an error uploading your PDF: ${errorMessage}. Please try again.`,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMsg]);
     }
   };
 
@@ -189,14 +193,15 @@ export default function Home() {
         setMessages((prev) => [...prev, assistantMessage]);
       }
       await loadSessions();
-    } catch (error: any) {
-      const errorMessage: Message = {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `Sorry, I encountered an error: ${error.message}. Please try again.`,
+        content: `Sorry, I encountered an error: ${errorMessage}. Please try again.`,
         timestamp: new Date(),
       };
-      setMessages((prev) => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMsg]);
     } finally {
       setIsLoading(false);
     }
@@ -204,7 +209,6 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-black to-zinc-950">
-      {/* Header */}
       <header className="fixed top-0 left-0 right-0 border-b border-zinc-800/50 bg-zinc-900/30 backdrop-blur-xl px-6 py-4 z-10">
         <div className="flex items-center justify-center">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
@@ -213,9 +217,8 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content */}
       <div className="flex flex-col lg:flex-row w-full pt-20">
-        {/* Left Sidebar - PDF Upload */}
+        {/* Left Sidebar - This is gonna be the PDF Upload */}
         <div className="w-full lg:w-96 border-b lg:border-b-0 lg:border-r border-zinc-800/50 bg-zinc-900/20 backdrop-blur-xl p-4 lg:p-6 flex flex-col lg:h-[calc(100vh-5rem)]">
           <SessionSelector
             sessions={sessions}
@@ -233,7 +236,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Right Side - Chat */}
         <div className="flex-1 flex flex-col lg:h-[calc(100vh-5rem)]">
           <ChatInterface
             messages={messages}

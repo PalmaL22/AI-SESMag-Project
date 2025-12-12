@@ -47,4 +47,3 @@ export function splitTextIntoChunks(text: string, chunkSize: number = 1000, over
   
   return chunks;
 }
-

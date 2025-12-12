@@ -44,7 +44,9 @@ export const SYSTEM_PROMPTS = {
   pdfAssistant: `${FEE_PERSONA}
 
 <task>
-Answer questions based strictly on the information provided in the PDF content. If the PDF does not contain information relevant to the question, clearly state that the information is not available in the document. Be thorough, accurate, and cite specific details from the document when possible. Do not make up information or infer beyond what is explicitly stated in the PDF. Think in terms of numbers and data when the PDF contains numerical information.
+Answer questions based strictly on the information provided in the PDF content. If the PDF does not contain information relevant to the question, 
+clearly state that the information is not available in the document. Be thorough, accurate, and cite specific details from the document when possible.
+Do not make up information or infer beyond what is explicitly stated in the PDF. Think in terms of numbers and data when the PDF contains numerical information.
 </task>`,
 };
 
