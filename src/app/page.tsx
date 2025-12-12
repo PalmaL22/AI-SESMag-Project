@@ -43,8 +43,11 @@ export default function Home() {
         content: msg.content,
         timestamp: new Date(msg.timestamp),
       }));
+
       setMessages(messages);
+
       if (data.sessionId) setSessionId(data.sessionId);
+
     } catch (error) {
       console.error('Failed to load conversation history:', error);
     }
@@ -114,6 +117,8 @@ export default function Home() {
 
       const url = new URL('/api', window.location.origin);
       url.searchParams.set('action', 'upload');
+
+
       if (sessionId) {
         url.searchParams.set('sessionId', sessionId.toString());
       }
@@ -123,6 +128,8 @@ export default function Home() {
         body: formData,
       });
 
+
+
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to upload PDF');
@@ -131,14 +138,19 @@ export default function Home() {
       const data = await response.json();
       setIsUploading(false);
       setUploadedFileName(file.name);
+
+
+
       if (data.sessionId) {
         setSessionId(data.sessionId);
         await loadConversationHistory(data.sessionId, null);
       }
       await loadSessions();
+
     } catch (error) {
       setIsUploading(false);
       setUploadedFileName(null);
+
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       const errorMsg: Message = {
         id: Date.now().toString(),
@@ -180,6 +192,7 @@ export default function Home() {
 
       const data = await response.json();
       const newSessionId = data.sessionId || sessionId;
+
       if (newSessionId) {
         setSessionId(newSessionId);
         await loadConversationHistory(newSessionId, null);
@@ -192,9 +205,12 @@ export default function Home() {
         };
         setMessages((prev) => [...prev, assistantMessage]);
       }
+
       await loadSessions();
+
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      
       const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",

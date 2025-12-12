@@ -14,6 +14,7 @@ const result = config({ path: envPath });
 if (result.error) {
   console.error('Error loading .env.local:', result.error.message);
   process.exit(1);
+
 }
 
 async function setupDatabase() {
@@ -32,6 +33,9 @@ async function setupDatabase() {
     console.error('Error:', errorMessage);
     process.exit(1);
   }
+
+   //
+  //
 }
 
 setupDatabase();

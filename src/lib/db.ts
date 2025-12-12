@@ -15,6 +15,9 @@ function getPool(): Pool {
   return pool;
 }
 
+
+
+
 export async function initDatabase() {
   const client = await getPool().connect();
   try {

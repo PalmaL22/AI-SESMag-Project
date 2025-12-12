@@ -92,6 +92,7 @@ if (typeof globalThis.Path2D === 'undefined') {
 }
 
 async function parsePDF(buffer: Buffer | Uint8Array) {
+  // eslint hates this for some reason fix later
   const pdfParse = require('pdf-parse') as (buffer: Buffer) => Promise<{ text: string }>;
   const bufferData = Buffer.isBuffer(buffer) ? buffer : Buffer.from(buffer);
   return await pdfParse(bufferData);
@@ -103,7 +104,6 @@ export async function DELETE(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get('sessionId');
-
     if (!sessionId) {
       return NextResponse.json({ error: 'Session ID is required' }, { status: 400 });
     }
@@ -114,10 +114,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ success: true });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Request failed';
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: 500 }
-    );
+    return NextResponse.json( { error: errorMessage }, { status: 500 } );
   }
 }
 
@@ -141,6 +138,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'File must be a PDF' }, { status: 400 });
       }
 
+
+
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
       const uint8Array = new Uint8Array(bytes);
@@ -160,6 +159,9 @@ export async function POST(request: NextRequest) {
       if (!text || typeof text !== 'string' || text.trim().length === 0) {
         return NextResponse.json({ error: 'PDF appears to be empty or unreadable' }, { status: 400 });
       }
+
+
+
 
       const uploadsDir = join(process.cwd(), 'uploads');
       if (!existsSync(uploadsDir)) {
@@ -188,23 +190,19 @@ export async function POST(request: NextRequest) {
       
       if (existingSessionId) {
         const sessionIdNum = parseInt(existingSessionId, 10);
+
         if (!isNaN(sessionIdNum)) {
           await updateSessionPDF(sessionIdNum, pdfId);
           sessionId = sessionIdNum;
         } else {
           sessionId = await createSession(pdfId);
         }
+
       } else {
         sessionId = await createSession(pdfId);
       }
 
-      return NextResponse.json({
-        success: true,
-        pdfId,
-        sessionId,
-        filename: file.name,
-        message: 'PDF uploaded successfully.',
-      });
+      return NextResponse.json({success: true, pdfId, sessionId, filename: file.name, message: 'PDF uploaded successfully.'});
     } else {
       const { message, filename, sessionId } = await request.json();
 
@@ -293,6 +291,9 @@ export async function POST(request: NextRequest) {
         sessionId: currentSessionId,
       });
     }
+
+
+
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Request failed';
     return NextResponse.json(
@@ -301,3 +302,5 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+

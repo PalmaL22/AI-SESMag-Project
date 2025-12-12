@@ -13,6 +13,7 @@ export default function PDFUpload({
   isUploading = false,
   uploadedFileName,
 }: PDFUploadProps) {
+
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -46,6 +47,8 @@ export default function PDFUpload({
   const handleClick = () => {
     fileInputRef.current?.click();
   };
+
+
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -102,7 +105,7 @@ export default function PDFUpload({
                   <div className="h-full bg-gradient-to-r from-blue-500 to-purple-600 animate-pulse w-3/4 rounded-full" />
                 </div>
                 <p className="text-sm text-zinc-400">
-                  Please wait while we process your document
+                  Please wait while I read over the PDF
                 </p>
               </div>
             </>
@@ -128,7 +131,7 @@ export default function PDFUpload({
                   {uploadedFileName}
                 </p>
                 <p className="text-sm text-zinc-400">
-                  PDF uploaded successfully!
+                  PDF uploaded successfully
                 </p>
                 <p className="text-xs text-zinc-500 mt-4">
                   Click here to upload a different PDF
@@ -170,4 +173,6 @@ export default function PDFUpload({
     </div>
   );
 }
+
+
 
