@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import PDFUploadButton from "./PDFUploadButton";
 
 interface Message {
   id: string;
@@ -13,18 +12,14 @@ interface Message {
 interface ChatInterfaceProps {
   messages: Message[];
   onSendMessage: (message: string) => void;
-  onFileSelect?: (file: File) => void;
   isLoading?: boolean;
-  isUploading?: boolean;
   uploadedFileName?: string | null;
 }
 
 export default function ChatInterface({
   messages,
   onSendMessage,
-  onFileSelect,
   isLoading,
-  isUploading,
   uploadedFileName,
 }: ChatInterfaceProps) {
   const [input, setInput] = useState("");
@@ -58,10 +53,10 @@ export default function ChatInterface({
               </div>
               <div className="space-y-2">
                 <p className="text-xl font-semibold text-zinc-100">
-                  Welcome to Sesmag AI
+                  Welcome to Fee AI
                 </p>
                 <p className="text-sm text-zinc-400">
-                  Upload a PDF document to get started, or ask me anything!
+                  Ask me anything, or upload a PDF document to chat about it!
                 </p>
               </div>
             </div>
@@ -120,18 +115,11 @@ export default function ChatInterface({
         className="border-t border-zinc-800/50 bg-zinc-900/50 backdrop-blur-sm p-4"
       >
         <div className="flex gap-2 items-center">
-          {onFileSelect && (
-            <PDFUploadButton
-              onFileSelect={onFileSelect}
-              isUploading={isUploading}
-              uploadedFileName={uploadedFileName}
-            />
-          )}
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask a question about your PDF..."
+            placeholder={uploadedFileName ? "Ask a question about your PDF..." : "Ask me anything or upload a PDF..."}
             disabled={isLoading}
             className="flex-1 px-5 py-3 rounded-full border border-zinc-700 bg-zinc-800/50 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all disabled:opacity-50 shadow-lg backdrop-blur-sm"
           />

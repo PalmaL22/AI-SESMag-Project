@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sesmag AI - PDF Chat Assistant",
+  title: "Fee AI - PDF Chat Assistant",
   description: "Upload PDFs and chat with AI about their content",
 };
 

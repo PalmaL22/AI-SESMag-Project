@@ -8,35 +8,41 @@ export const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Generate embeddings for text
-export async function generateEmbedding(text: string): Promise<number[]> {
-  const response = await openai.embeddings.create({
-    model: 'text-embedding-3-small',
-    input: text,
-  });
-  
-  return response.data[0].embedding;
-}
-
-// Generate embeddings for multiple texts
-export async function generateEmbeddings(texts: string[]): Promise<number[][]> {
-  const response = await openai.embeddings.create({
-    model: 'text-embedding-3-small',
-    input: texts,
-  });
-  
-  return response.data.map(item => item.embedding);
-}
-
-// Split text into chunks
 export function splitTextIntoChunks(text: string, chunkSize: number = 1000, overlap: number = 200): string[] {
+  if (!text || typeof text !== 'string' || text.length === 0) {
+    return [];
+  }
+  
+  if (chunkSize <= 0) {
+    chunkSize = 1000;
+  }
+  
+  if (overlap < 0 || overlap >= chunkSize) {
+    overlap = Math.min(200, Math.floor(chunkSize / 5));
+  }
+  
+  const maxChunks = 10000;
   const chunks: string[] = [];
   let start = 0;
+  let iterations = 0;
   
-  while (start < text.length) {
+  while (start < text.length && iterations < maxChunks) {
     const end = Math.min(start + chunkSize, text.length);
-    chunks.push(text.substring(start, end));
-    start = end - overlap;
+    const chunk = text.substring(start, end);
+    if (chunk.length > 0) {
+      chunks.push(chunk);
+    }
+    
+    const nextStart = end - overlap;
+    if (nextStart <= start || nextStart >= text.length) {
+      break;
+    }
+    start = nextStart;
+    iterations++;
+  }
+  
+  if (chunks.length === 0 && text.length > 0) {
+    chunks.push(text.substring(0, Math.min(chunkSize, text.length)));
   }
   
   return chunks;

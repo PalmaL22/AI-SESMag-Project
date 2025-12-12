@@ -48,22 +48,23 @@ export default function PDFUpload({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full flex flex-col">
+      <h2 className="text-lg font-semibold text-zinc-200 mb-4">Upload PDF Document</h2>
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={handleClick}
         className={`
-          relative border-2 border-dashed rounded-lg p-4 text-center cursor-pointer
-          transition-all duration-300 ease-in-out
+          relative border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer
+          transition-all duration-300 ease-in-out flex-1 flex flex-col items-center justify-center
           ${
             isDragging
-              ? "border-blue-500 bg-blue-50 dark:bg-blue-950/20 scale-[1.02] shadow-lg"
-              : "border-zinc-300 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-900/50"
+              ? "border-blue-500 bg-blue-500/10 scale-[1.01] shadow-2xl shadow-blue-500/20"
+              : "border-zinc-700 hover:border-zinc-600 hover:bg-zinc-800/30"
           }
           ${isUploading ? "opacity-60 cursor-not-allowed" : ""}
-          bg-white dark:bg-zinc-900/50 backdrop-blur-sm
+          bg-zinc-900/40 backdrop-blur-sm
         `}
       >
         <input
@@ -75,12 +76,12 @@ export default function PDFUpload({
           disabled={isUploading}
         />
 
-        <div className="flex flex-col items-center gap-3">
+        <div className="flex flex-col items-center gap-6">
           {isUploading ? (
             <>
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center animate-pulse">
+              <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center animate-pulse shadow-xl">
                 <svg
-                  className="w-6 h-6 text-white"
+                  className="w-12 h-12 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -93,20 +94,23 @@ export default function PDFUpload({
                   />
                 </svg>
               </div>
-              <div className="space-y-1.5 w-full">
-                <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                  Uploading...
+              <div className="space-y-3 w-full max-w-xs">
+                <p className="text-lg font-semibold text-zinc-100">
+                  Uploading PDF...
                 </p>
-                <div className="w-full h-1.5 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-zinc-700 rounded-full overflow-hidden">
                   <div className="h-full bg-gradient-to-r from-blue-500 to-purple-600 animate-pulse w-3/4 rounded-full" />
                 </div>
+                <p className="text-sm text-zinc-400">
+                  Please wait while we process your document
+                </p>
               </div>
             </>
           ) : uploadedFileName ? (
             <>
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+              <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-xl">
                 <svg
-                  className="w-6 h-6 text-white"
+                  className="w-12 h-12 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -119,20 +123,23 @@ export default function PDFUpload({
                   />
                 </svg>
               </div>
-              <div className="space-y-1 w-full">
-                <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+              <div className="space-y-2 text-center">
+                <p className="text-lg font-semibold text-zinc-100 break-words px-4">
                   {uploadedFileName}
                 </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                  Click to change
+                <p className="text-sm text-zinc-400">
+                  PDF uploaded successfully!
+                </p>
+                <p className="text-xs text-zinc-500 mt-4">
+                  Click here to upload a different PDF
                 </p>
               </div>
             </>
           ) : (
             <>
-              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-800 dark:to-zinc-700 flex items-center justify-center group-hover:from-blue-100 group-hover:to-purple-100 dark:group-hover:from-blue-900 dark:group-hover:to-purple-900 transition-colors">
+              <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-600/20 to-purple-600/20 border-2 border-dashed border-zinc-600 flex items-center justify-center transition-colors group-hover:border-blue-500">
                 <svg
-                  className="w-6 h-6 text-zinc-600 dark:text-zinc-400"
+                  className="w-12 h-12 text-zinc-400 group-hover:text-blue-400 transition-colors"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -141,16 +148,19 @@ export default function PDFUpload({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                   />
                 </svg>
               </div>
-              <div className="space-y-1">
-                <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                  {isDragging ? "Drop PDF here" : "Upload PDF"}
+              <div className="space-y-3 text-center">
+                <p className="text-xl font-semibold text-zinc-100">
+                  {isDragging ? "Drop your PDF here" : "Upload a PDF Document"}
                 </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                  Drag & drop or click
+                <p className="text-sm text-zinc-400">
+                  Drag and drop your PDF file here, or click to browse
+                </p>
+                <p className="text-xs text-zinc-500 mt-6">
+                  Supported format: PDF files only
                 </p>
               </div>
             </>
