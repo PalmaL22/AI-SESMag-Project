@@ -4,7 +4,7 @@ This repository contains the final project for Tech3500.
 
 ## Overview
 
-Fee AI is an intelligent PDF chat assistant that allows users to upload PDF documents and have conversations with an AI character named Fee. Fee will read over uploaded PDFs and answer questions based on her unique personality, background, and perspective.
+Fee AI is an AI PDF chat assistant that allows users to upload PDF documents and have conversations with an AI character named Fee. Fee will read over uploaded PDFs and answer questions based on her unique personality, background, and perspective.
 
 ## Features
 
