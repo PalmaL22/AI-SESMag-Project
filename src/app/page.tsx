@@ -206,18 +206,10 @@ export default function Home() {
     <div className="flex min-h-screen bg-gradient-to-br from-zinc-950 via-black to-zinc-950">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 border-b border-zinc-800/50 bg-zinc-900/30 backdrop-blur-xl px-6 py-4 z-10">
-        <div className="flex items-center justify-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg">
-            <span className="text-white font-bold text-lg">F</span>
-          </div>
-          <div className="text-center sm:text-left">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
-              Fee AI
-            </h1>
-            <p className="text-xs text-zinc-400 mt-0.5">
-              Intelligent PDF chat assistant
-            </p>
-          </div>
+        <div className="flex items-center justify-center">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+            Fee AI
+          </h1>
         </div>
       </header>
 

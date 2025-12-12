@@ -46,16 +46,13 @@ export default function ChatInterface({
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-thin scrollbar-thumb-zinc-700">
         {messages.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center space-y-4 max-w-md">
-              <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-2xl">
-                <span className="text-4xl">🤖</span>
-              </div>
+          <div className="flex items-center justify-center h-full px-4">
+            <div className="text-center space-y-4 max-w-md w-full">
               <div className="space-y-2">
-                <p className="text-xl font-semibold text-zinc-100">
+                <p className="text-xl sm:text-2xl font-semibold text-zinc-100">
                   Welcome to Fee AI
                 </p>
-                <p className="text-sm text-zinc-400">
+                <p className="text-sm sm:text-base text-zinc-400 px-4">
                   Ask me anything, or upload a PDF document to chat about it!
                 </p>
               </div>
@@ -70,13 +67,13 @@ export default function ChatInterface({
               }`}
             >
               <div
-                className={`max-w-[75%] rounded-2xl px-5 py-3.5 shadow-lg ${
+                className={`max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 sm:px-5 py-3 sm:py-3.5 shadow-lg ${
                   message.role === "user"
                     ? "bg-gradient-to-br from-blue-600 to-purple-600 text-white"
                     : "bg-zinc-800/80 text-zinc-100 border border-zinc-700/50"
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">
+                <p className="text-sm sm:text-base whitespace-pre-wrap break-words leading-relaxed">
                   {message.content}
                 </p>
                 <p className="text-xs mt-2 opacity-60">
@@ -112,7 +109,7 @@ export default function ChatInterface({
       {/* Input Form */}
       <form
         onSubmit={handleSubmit}
-        className="border-t border-zinc-800/50 bg-zinc-900/50 backdrop-blur-sm p-4"
+        className="border-t border-zinc-800/50 bg-zinc-900/50 backdrop-blur-sm p-3 sm:p-4"
       >
         <div className="flex gap-2 items-center">
           <input
@@ -121,12 +118,12 @@ export default function ChatInterface({
             onChange={(e) => setInput(e.target.value)}
             placeholder={uploadedFileName ? "Ask a question about your PDF..." : "Ask me anything or upload a PDF..."}
             disabled={isLoading}
-            className="flex-1 px-5 py-3 rounded-full border border-zinc-700 bg-zinc-800/50 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all disabled:opacity-50 shadow-lg backdrop-blur-sm"
+            className="flex-1 px-4 sm:px-5 py-2.5 sm:py-3 text-sm sm:text-base rounded-full border border-zinc-700 bg-zinc-800/50 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all disabled:opacity-50 shadow-lg backdrop-blur-sm"
           />
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
+            className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-sm sm:text-base font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
           >
             <span className="flex items-center gap-2">
               Send

@@ -234,6 +234,14 @@ export async function POST(request: NextRequest) {
         currentSessionId = await createSession(pdfId);
       }
 
+      const conversationHistory = await getConversationHistory(currentSessionId, 50);
+      const historyMessages = conversationHistory
+        .filter(msg => msg.role === 'user' || msg.role === 'assistant')
+        .map(msg => ({
+          role: msg.role as 'user' | 'assistant',
+          content: msg.content,
+        }));
+
       await saveMessage('user', message, currentSessionId, pdfId);
 
       let systemMessage = SYSTEM_PROMPTS.default;
@@ -266,12 +274,15 @@ export async function POST(request: NextRequest) {
         }
       }
 
+      const messages = [
+        { role: 'system' as const, content: systemMessage },
+        ...historyMessages,
+        { role: 'user' as const, content: userMessage },
+      ];
+
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemMessage },
-          { role: 'user', content: userMessage },
-        ],
+        messages,
         temperature: 0.7,
         max_tokens: 500,
       });
